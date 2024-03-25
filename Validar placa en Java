@@ -1,0 +1,60 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class ValidadorDePlacas {
+    private static final Map<String, String> TIPOS_VEHICULOS = new HashMap<>();
+
+    static {
+        TIPOS_VEHICULOS.put("P", "Particular");
+        TIPOS_VEHICULOS.put("A", "Alquiler");
+        TIPOS_VEHICULOS.put("C", "Comercial");
+        TIPOS_VEHICULOS.put("U", "Transporte Urbano");
+        TIPOS_VEHICULOS.put("TRC", "Uso Agrícola");
+        TIPOS_VEHICULOS.put("TC", "Remolques");
+        TIPOS_VEHICULOS.put("O", "Oficial");
+        TIPOS_VEHICULOS.put("CD", "Cuerpo Diplomático");
+        TIPOS_VEHICULOS.put("CC", "Cuerpo Consular");
+        TIPOS_VEHICULOS.put("MI", "Misión Internacional");
+        // Considerar "M" como "Motocicleta" aquí, pero se necesita un criterio adicional para "Misión Internacional"
+        TIPOS_VEHICULOS.put("M", "Motocicleta");
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Bucle para permitir múltiples verificaciones
+        String continuar;
+        do {
+            System.out.println("Ingrese la placa del vehículo:");
+            String placa = scanner.nextLine().toUpperCase().trim(); // Convertir a mayúsculas y eliminar espacios
+
+            // Validar estructura
+            if (!validarEstructuraPlaca(placa)) {
+                System.out.println("La placa ingresada es inválida.");
+            } else {
+                // Extraer el prefijo y validar el tipo de vehículo
+                String tipoVehiculo = identificarTipoVehiculo(placa.substring(0, placa.length() - 6));
+                if (tipoVehiculo == null) {
+                    System.out.println("El tipo de vehículo es desconocido o la placa no cumple con la estructura esperada.");
+                } else {
+                    System.out.println("La placa es válida y corresponde a un vehículo de tipo: " + tipoVehiculo);
+                }
+            }
+
+            // Preguntar si desea continuar
+            System.out.println("¿Desea verificar otra placa? (S/N)");
+            continuar = scanner.nextLine().trim().toUpperCase();
+        } while (continuar.equals("S"));
+    }
+
+    private static boolean validarEstructuraPlaca(String placa) {
+        // Validar que la placa tenga 6 caracteres alfanuméricos al final (3 números y 3 letras sin vocales)
+        return placa.matches(".*[0-9]{3}[BCDFGHJKLMNPQRSTVWXYZ]{3}$");
+    }
+
+    private static String identificarTipoVehiculo(String prefijo) {
+        // Devolver la descripción del tipo de vehículo basado en el prefijo
+        return TIPOS_VEHICULOS.get(prefijo);
+    }
+}
